@@ -9,6 +9,8 @@ const cors = require('cors');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(cors());
+
 app.get('/', (req, res) => {
   res.send('Welcome at site, that will generate ics file from weeia site');
 });

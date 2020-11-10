@@ -16,7 +16,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getIcs', (req, res) => {
-  res.json({ result: req.body });
+  if(!req.body || (!req.body.rok || isNaN(parseInt(req.body.rok))) ||
+      (!req.body.miesiac || isNaN(parseInt(req.body.miesiac))) ||
+      (!req.body.lang || isNaN(parseInt(req.body.lang)))) {
+    res.status(500).send("Pass body with string property");
+  } else {
+    res.json({ result: req.body });
+  }
 });
 
 app.listen(port, () => {

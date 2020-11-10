@@ -5,3 +5,7 @@ const port = 3000;
 app.get('/', (req, res) => {
   res.send('Welcome at site, that will generate ics file from weeia site');
 });
+
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`)
+})

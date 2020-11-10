@@ -19,5 +19,8 @@
   "homepage": "https://github.com/bakpawel103/PPKWU_Zadanie3#readme",
   "devDependencies": {
     "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }

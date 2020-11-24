@@ -7,6 +7,9 @@ const bodyParser = require('body-parser');
 
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
+const { writeFileSync } = require('fs')
+
+const ics = require('ics');
 
 const cors = require('cors');
 
@@ -34,15 +37,23 @@ app.get('/getIcs', (req, res) => {
         var eventName = dom.window.document.querySelectorAll("td.active")[nodeListIndex].getElementsByClassName("InnerBox")[0].firstChild.innerHTML;
 
         events.push({
-          day: eventDay,
-          name: eventName
+          title: eventName,
+          start: [req.body.rok, req.body.miesiac, eventDay],
+          end: [req.body.rok, req.body.miesiac, eventDay]
         });
       }
+      var createdIcsFile = createIcsFile(events);
 
-      res.json({ result: events });
+      writeFileSync(`${__dirname}/${req.body.rok}_${req.body.miesiac}.ics`, createdIcsFile.value)
+
+      res.sendFile(`${__dirname}/${req.body.rok}_${req.body.miesiac}.ics`);
     });
   }
 });
+
+var createIcsFile = (events) => {
+  return ics.createEvents(events);
+}
 
 var getCalendarFromUrl = (year, month, lang, callback) => {
   http.get(`http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=${year}&miesiac=${month}&lang=${lang}`, function(res) {

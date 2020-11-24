@@ -4,6 +4,7 @@ const app = express();
 const port = 3000;
 
 const bodyParser = require('body-parser');
+const htmlTableToJson = require('html-table-to-json');
 
 const cors = require('cors');
 
@@ -22,13 +23,15 @@ app.get('/getIcs', (req, res) => {
       (!req.body.lang || isNaN(parseInt(req.body.lang)))) {
     res.status(500).send("Pass body with string property");
   } else {
-    getCalendarFromUrl(req.body.rok, req.body.miesiac, req.body.lang);
+    var jsonHtmlString = getCalendarFromUrl(req.body.rok, req.body.miesiac, req.body.lang, function(result) {
+      //console.log(result);
 
-    res.json({ result: req.body });
+      res.json({ result: result });
+    });
   }
 });
 
-var getCalendarFromUrl = (year, month, lang) => {
+var getCalendarFromUrl = (year, month, lang, callback) => {
   http.get(`http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=${year}&miesiac=${month}&lang=${lang}`, function(res) {
     var data = [];
 
@@ -38,6 +41,7 @@ var getCalendarFromUrl = (year, month, lang) => {
       let b = new Buffer(Buffer.concat(data).toString('base64'), 'base64')
       var htmlString = b.toString();
       console.log(htmlString);
+      callback(htmlTableToJson.parse(htmlString).results);
     });
   });
 }

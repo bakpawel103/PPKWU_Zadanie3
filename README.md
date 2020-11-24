@@ -5,7 +5,7 @@ It's a Nodejs REST Api project that will get year, month and language and will r
 ## Starting server tutorial:
 
 To start server, just go to project directory with terminal and enter command:  
-> node index.js
+> node run dev
 
 ## Endpoints:
 

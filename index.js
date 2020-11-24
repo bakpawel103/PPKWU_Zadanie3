@@ -37,23 +37,9 @@ var getCalendarFromUrl = (year, month, lang) => {
     }).on('end', function() {
       let b = new Buffer(Buffer.concat(data).toString('base64'), 'base64')
       var htmlString = b.toString();
-      var nodes = document.fromString(htmlString);
-      var result = tableToJson(nodes);
+      console.log(htmlString);
     });
   });
-}
-
-var tableToJson = (table) => {
-  var data = [];
-  for (var i=1; i<table.rows.length; i++) {
-    var tableRow = table.rows[i];
-    var rowData = [];
-    for (var j=0; j<tableRow.cells.length; j++) {
-      rowData.push(tableRow.cells[j].innerHTML);;
-    }
-    data.push(rowData);
-  }
-  return data;
 }
 
 app.listen(port, () => {

@@ -4,7 +4,9 @@ const app = express();
 const port = 3000;
 
 const bodyParser = require('body-parser');
-const htmlTableToJson = require('html-table-to-json');
+
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 const cors = require('cors');
 
@@ -23,10 +25,21 @@ app.get('/getIcs', (req, res) => {
       (!req.body.lang || isNaN(parseInt(req.body.lang)))) {
     res.status(500).send("Pass body with string property");
   } else {
-    var jsonHtmlString = getCalendarFromUrl(req.body.rok, req.body.miesiac, req.body.lang, function(result) {
-      //console.log(result);
+    getCalendarFromUrl(req.body.rok, req.body.miesiac, req.body.lang, function(result) {
+      const dom = new JSDOM(result);
+      var events = [];
 
-      res.json({ result: result });
+      for(let nodeListIndex = 0; nodeListIndex < dom.window.document.querySelectorAll("td.active").length; nodeListIndex++) {
+        var eventDay = dom.window.document.querySelectorAll("td.active")[nodeListIndex].querySelectorAll("a.active")[0].innerHTML;
+        var eventName = dom.window.document.querySelectorAll("td.active")[nodeListIndex].getElementsByClassName("InnerBox")[0].firstChild.innerHTML;
+
+        events.push({
+          day: eventDay,
+          name: eventName
+        });
+      }
+
+      res.json({ result: events });
     });
   }
 });
@@ -38,10 +51,8 @@ var getCalendarFromUrl = (year, month, lang, callback) => {
     res.on('data', function(chunk) {
       data.push(chunk);
     }).on('end', function() {
-      let b = new Buffer(Buffer.concat(data).toString('base64'), 'base64')
-      var htmlString = b.toString();
-      console.log(htmlString);
-      callback(htmlTableToJson.parse(htmlString).results);
+      data = Buffer.concat(data).toString();
+      callback(data);
     });
   });
 }

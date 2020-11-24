@@ -24,6 +24,8 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "html-table-to-json": "^1.0.0"
+    "html-table-to-json": "^1.0.0",
+    "jsdom": "^16.4.0",
+    "tabletojson": "^2.0.4"
   }
 }
